@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Opentpv is a point of sales application 
+	designed for touch screens. Copyright (C) 2008 Open Sistemas de InformaciÃ³n 
+	Internet, S.L. Copyright (C) 2007-2008 Openbravo, S.L. http://www.opensistemas.com 
+	e-mail: imasd@opensistemas.com This program is free software; you can redistribute 
+	it and/or modify it under the terms of the GNU General Public License as 
+	published by the Free Software Foundation; either version 2 of the License, 
+	or (at your option) any later version. This program is distributed in the 
+	hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU General Public License for more details. You should have received a copy 
+	of the GNU General Public License along with this program; if not, write 
+	to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+	MA 02111-1307 USA -->
+<output>
+	<ticket>
+		<line></line>
+		<line>
+			<text align="left">COMPASS GROUP SERVICES S.A.</text>
+		</line>
+		<line>
+			<text align="left">NIT: 890.929-877-1</text>
+		</line>
+		<line>
+			<text align="left">${payments.printTipoCierre()}</text>
+		</line>
+		<line></line>
+		<line>
+			<text>${payments.printDateEnd()}</text>
+		</line>
+		<line>
+			<text length="11">CAJA - No. </text>
+			<text> ${payments.printHost()}</text>
+		</line>
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line>
+			<text length="15">Factura Inicial</text>
+			<text align="right" length="16">                 </text>
+			<text align="right" length="11">${payments.printFctInicial()}</text>
+		</line>
+		<line>
+			<text length="13">Factura Final</text>
+			<text align="right" length="18">                  </text>
+			<text align="right" length="11">${payments.printFctFinal()}</text>
+		</line>
+		<line>
+			<text length="17">Cantidad Facturas</text>
+			<text align="right" length="14">              </text>
+			<text align="right" length="11">${payments.printCantFact()}</text>
+		</line>
+		<line></line>		
+		#foreach ($line in $payments.getSalesLines()) 		
+		   <line>
+			   <text align="left" length="25">VENTA NETA ${line.printTax()}</text>
+			   <text align="left" length="6"></text>
+			   <text align="right" length="11">${line.printSubtotal()}</text>
+		   </line>		 
+		#end
+        <line>
+			<text>==========================================</text>
+		</line>
+        <line>
+			<text align="left" length="16">TOTAL VENTA NETA</text>
+			<text align="right" length="14"></text>
+			<text align="right" length="12">${payments.printSalesSubtotalSVC()}</text>
+		</line>
+        <line>
+			<text>==========================================</text>
+		</line>
+		#foreach ($line in $payments.getSalesLines()) 		
+		   <line>
+			   <text align="left" length="25">IVA ${line.printTax()}</text>
+			   <text align="left" length="6"></text>
+			   <text align="right" length="11">${line.printTaxtotal()}</text>
+		   </line>		 
+		#end
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line>
+			<text align="left" length="11">VENTA TOTAL</text>
+			<text align="right" length="19"></text>
+			<text align="right" length="12">${payments.printPaymentsTotalSVC()}</text>
+		</line>
+		
+        <line>
+			<text align="left" length="11">IMP. BOLSA</text>
+			<text align="right" length="20"></text>
+			<text align="right" length="11">${payments.printPaymentsTotalImpB()}</text>
+		</line>
+		
+		<line>
+			<text>==========================================</text>
+		</line>
+		
+		<line>
+			<text align="left" length="23">VENTA TOTAL + IMP.BOLSA</text>
+			<text align="right" length="8"></text>
+			<text align="right" length="11">${payments.printPaymentsTotalSVCImpB()}</text>
+		</line>                
+		<line>
+			<text>==========================================</text>
+		</line>		
+		
+        <line>
+			<text align="left">***CUADRE DE VALORES</text>
+		</line>
+		<line></line>
+		<line>
+			<text align="left" length="8">EFECTIVO</text>
+			<text align="left" length="23">                       </text>
+			<text align="right" length="11">${payments.printPagoEfectivo()}</text>
+		</line>
+		<line>
+			<text>==========================================</text>
+		</line>
+		#foreach ($line in $payments.getPaymentLines()) #if
+		($line.getType()!="cash")
+		<line>
+			<text align="left" length="25">${line.printType()}</text>
+			<text align="left" length="6"></text>
+			<text align="right" length="11">${line.printValue()}</text>
+		</line>
+		#end #end
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line>
+			<text align="left" length="6">TOTAL</text>
+			<text align="left" length="25">                         </text>
+			<text align="right" length="11">${payments.printPaymentsTotalSVCImpB()}</text>
+		</line>
+		<line></line>
+		<line>
+			<text align="left">------- TOTAL POR TIPO DE IMPUESTO -------</text>
+		</line>
+		<line></line>
+		<line>
+			<text align="left">IMP CANT SUBTOTAL IVA TOTAL</text>
+		</line>
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line></line>
+		<line></line>
+		<line>
+                <text align="left" length="18">***VENTAS CREDITO</text>
+			<text align="right" length="8">CANTIDAD</text>
+			<text align="right" length="16">VALOR UNITARIO</text>
+                </line>
+                <line>
+			<text>==========================================</text>
+		</line>
+        #foreach ($line in $payments.getSalesLinesVC()) 		
+		    <line>
+			   <text align="left" length="18">${line.printProducto()}</text>
+			   <text align="right" length="8">${line.printUnidades()}</text>
+			   <text align="right" length="16">${line.printSubtotal()}</text>
+		   </line>		 
+		#end
+                <line>
+		  <text>==========================================</text>
+		</line>
+                <line>
+                <text align="left" length="19">TOTAL</text>
+		   	<text align="right" length="8">${payments.printSalesTotalUnidadesVC()}</text>
+			<text align="right" length="15">${payments.printSalesTotalVC()}</text>
+                </line>
+                <line>
+			<text>==========================================</text>
+		</line>
+
+
+                <line></line>
+		<line>
+                <text align="left" length="18">***VENTAS PREPAGO</text>
+			<text align="right" length="8">CANTIDAD</text>
+			<text align="right" length="16">VALOR UNITARIO</text>
+                </line>
+                <line>
+			<text>==========================================</text>
+		</line>
+        #foreach ($line in $payments.getSalesLinesVP()) 		
+		    <line>
+			   <text align="left" length="18">${line.printProducto()}</text>
+			   <text align="right" length="8">${line.printUnidades()}</text>
+			   <text align="right" length="16">${line.printSubtotal()}</text>
+		   </line>		 
+		#end
+                <line>
+		  <text>==========================================</text>
+		</line>
+                <line>
+                <text align="left" length="19">TOTAL</text>
+		   	<text align="right" length="8">${payments.printSalesTotalUnidadesVP()}</text>
+			<text align="right" length="15">${payments.printSalesTotalVP()}</text>
+                </line>
+                <line>
+			<text>==========================================</text>
+		</line>
+		<line></line>
+		<line>
+			<text>----------- VENTAS DEFINITIVAS -----------</text>
+		</line>
+		#foreach ($line in $payments.getReporteXZLines())
+		<line></line>
+		<line>
+			<text align="left">***${line.printCategoria()}</text>
+		</line>
+		#foreach ($subline in $line.getLineasReporteZX())
+		<line>
+			<text align="right" length="5">${subline.printUnidad()}  </text>
+			<text align="left" length="19">${subline.printProducto()}  </text>
+			<text align="right" length="9">${subline.printPrecio()}  </text>
+			<text align="right" length="9">${subline.printTotal()}  </text>
+		</line>
+		#end
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line>
+			<text align="left" length="25">TOTAL  </text>
+			<text align="right" length="6">${line.printCount()}</text>
+			<text align="right" length="11">${line.printTotalCat()}  </text>
+		</line>
+		#end
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line>
+			<text align="left" length="10">Suma Total</text>
+			<text align="left" length="20"></text>
+			<text align="right" length="12">${payments.printSumTotalCat()}</text>
+		</line>
+		<line></line>
+		<line>
+			<text>--------- DEVOLUCIONES APLICADAS ---------</text>
+		</line>
+		#foreach ($line in $payments.getReporteXZLines()) #if
+		($line.getCountDev()>0)
+		<line></line>
+		<line>
+			<text align="left">***${line.printCategoria()}</text>
+		</line>
+		#foreach ($subline in $line.getLineasReporteZXDev())
+		<line>
+			<text align="right" length="5">${subline.printUnidad()}  </text>
+			<text align="left" length="19">${subline.printProducto()}  </text>
+			<text align="right" length="9">${subline.printPrecio()}  </text>
+			<text align="right" length="9">${subline.printTotal()}  </text>
+		</line>
+		#end
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line>
+			<text align="left" length="25">TOTAL </text>
+			<text align="right" length="6">${line.printCountDev()}</text>
+			<text align="right" length="11">${line.printTotalDev()}  </text>
+		</line>
+		#end #end #if ($payments.getSumTotalCatDev()==0)
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line>
+			<text align="left" length="25">TOTAL </text>
+			<text align="right" length="6">     0</text>
+			<text align="right" length="11">           0</text>
+		</line>
+		#end
+		<line>
+			<text>==========================================</text>
+		</line>
+		<line>
+			<text align="left" length="10">Suma Total</text>
+			<text align="left" length="20"></text>
+			<text align="right" length="12">${payments.printSumTotalCatDev()}</text>
+		</line>
+		<line></line>
+		<line>
+			<text align="left" length="10">Ventas</text>
+			<text align="left" length="20"></text>
+			<text align="right" length="12">${payments.printPaymentsTotal()}</text>
+		</line>
+		<line>
+			<text align="left" length="13">Devoluciones</text>
+			<text align="left" length="17"></text>
+			<text align="right" length="12">${payments.printSumTotalCatDev()}</text>
+		</line>
+		<line>
+			<text align="left" length="10">Suma Total</text>
+			<text align="left" length="20"></text>
+			<text align="right" length="12">${payments.printSumTotalCat()}</text>
+		</line>
+		<line></line>
+		<line></line>
+	</ticket>
+</output>

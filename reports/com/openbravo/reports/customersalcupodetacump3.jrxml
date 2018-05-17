@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD JasperReport//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="customerpercon" pageWidth="1152" pageHeight="612" orientation="Landscape" columnWidth="1132" leftMargin="10" rightMargin="10" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="225"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="ARG" class="java.lang.Object" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[SELECT CUSTOMERS.ID AS EMPLEADO, CUSTOMERS.TAXID, CUSTOMERS.NAME, CUSTOMERS.CARD, CONCAT(CENTROCOSTO.NAME, '-', SUBCENTROCOSTO.NAME) AS CCOSTO,
+		TICKETLINES.NAME AS PRODUCTO, TICKETLINES.UNITS AS CANTIDAD,
+(PRODUCTS.PRICESELL3) AS PRECIO, (TICKETLINES.UNITS * PRODUCTS.PRICESELL3) AS PRECIOTOTAL,RECEIPTS.DATENEW AS FECHA FROM
+CUSTOMERS,PAYMENTS,TICKETS, TICKETLINES, TAXES, RECEIPTS, CENTROCOSTO, SUBCENTROCOSTO, PRODUCTS 
+WHERE CUSTOMERS.ID=TICKETS.CUSTOMER AND
+CUSTOMERS.CCOSTOID = CENTROCOSTO.ID AND
+CUSTOMERS.SUBCCOSTOID = SUBCENTROCOSTO.ID AND
+TICKETLINES.TAXID = TAXES.ID AND
+TICKETS.ID = TICKETLINES.TICKET AND
+TICKETS.ID=PAYMENTS.RECEIPT AND
+TICKETS.ID = RECEIPTS.ID AND 
+TICKETLINES.PRODUCT = PRODUCTS.ID 
+GROUP BY CUSTOMERS.ID, TICKETLINES.PRODUCT, TICKETS.ID
+ORDER BY CUSTOMERS.NAME]]>
+	</queryString>
+	<field name="EMPLEADO" class="java.lang.String"/>
+	<field name="TAXID" class="java.lang.String"/>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="CARD" class="java.lang.String"/>
+	<field name="CCOSTO" class="java.lang.String"/>
+	<field name="PRODUCTO" class="java.lang.String"/>
+	<field name="CANTIDAD" class="java.lang.Double"/>
+	<field name="PRECIO" class="java.lang.Double"/>
+	<field name="PRECIOTOTAL" class="java.lang.Double"/>
+	<field name="FECHA" class="java.util.Date"/>
+	<variable name="PRECIOTOTAL1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{PRECIOTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="CANTIDADES" class="java.lang.Double" resetType="Group" resetGroup="EMPLEADO" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD}]]></variableExpression>
+	</variable>
+	<variable name="TOTALES" class="java.lang.Double" resetType="Group" resetGroup="EMPLEADO" calculation="Sum">
+		<variableExpression><![CDATA[$F{PRECIOTOTAL}]]></variableExpression>
+	</variable>
+	<variable name="GRANTOTAL" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{PRECIOTOTAL}]]></variableExpression>
+	</variable>
+	<group name="EMPLEADO">
+		<groupExpression><![CDATA[$F{CARD}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="17">
+				<textField hyperlinkType="None">
+					<reportElement mode="Opaque" x="117" y="0" width="85" height="17" backcolor="#B8CCE4"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{CARD}]]></textFieldExpression>
+				</textField>
+				<textField hyperlinkType="None">
+					<reportElement mode="Opaque" x="202" y="0" width="234" height="17" backcolor="#B8CCE4"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{NAME}]]></textFieldExpression>
+				</textField>
+				<textField hyperlinkType="None">
+					<reportElement mode="Opaque" x="436" y="0" width="502" height="17" backcolor="#B8CCE4"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{CCOSTO}]]></textFieldExpression>
+				</textField>
+				<textField hyperlinkType="None">
+					<reportElement mode="Opaque" x="938" y="0" width="62" height="17" backcolor="#B8CCE4"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.INT.formatValue($V{CANTIDADES})]]></textFieldExpression>
+				</textField>
+				<textField hyperlinkType="None">
+					<reportElement mode="Opaque" x="1000" y="0" width="131" height="17" backcolor="#B8CCE4"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue($V{TOTALES})]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="0" width="117" height="17" backcolor="#B8CCE4"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="102">
+			<staticText>
+				<reportElement mode="Opaque" x="719" y="83" width="219" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE PRODUCTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1000" y="83" width="64" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRECIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="938" y="83" width="62" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="83" width="117" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA CONSUMO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="1064" y="83" width="67" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="202" y="83" width="234" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPLEADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="117" y="83" width="85" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ID EMPLEADO]]></text>
+			</staticText>
+			<textField hyperlinkType="None">
+				<reportElement x="0" y="0" width="1131" height="25" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="Dialog" size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{label.titleCompass}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false" hyperlinkType="None">
+				<reportElement key="textField-15" mode="Transparent" x="0" y="25" width="1131" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+					<font fontName="Dialog" size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{label.titleCompass1}]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement key="textField-15" mode="Transparent" x="0" y="50" width="1131" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="Dialog" size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["RESUMEN DE VENTA POR FORMA DE PAGO DESDE  " +
+com.openbravo.format.Formats.TIMESTAMPPos.formatValue((java.util.Date)((Object[])((Object[])$P{ARG})[0])[1]) +
+"  HASTA  " + com.openbravo.format.Formats.TIMESTAMPPos.formatValue((java.util.Date)((Object[])((Object[])$P{ARG})[0])[3])]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="436" y="83" width="283" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CENTRO - SUB CENTRO COSTO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="17">
+			<textField hyperlinkType="None">
+				<reportElement x="0" y="0" width="117" height="17"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.TIMESTAMP.formatValue($F{FECHA})]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="719" y="0" width="219" height="17"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PRODUCTO}]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="938" y="0" width="62" height="17"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.INT.formatValue($F{CANTIDAD})]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="1000" y="0" width="64" height="17"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue($F{PRECIO})]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="1064" y="0" width="67" height="17"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue($F{PRECIOTOTAL})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band/>
+	</pageFooter>
+	<summary>
+		<band height="38">
+			<staticText>
+				<reportElement x="719" y="19" width="281" height="19"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL ACUMULADO   ]]></text>
+			</staticText>
+			<textField hyperlinkType="None">
+				<reportElement x="1000" y="19" width="131" height="19"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue($V{GRANTOTAL})]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

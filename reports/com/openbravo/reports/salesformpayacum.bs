@@ -1,0 +1,58 @@
+//    Openbravo POS is a point of sales application designed for touch screens.
+//    Copyright (C) 2007-2008 Openbravo, S.L.
+//    http://sourceforge.net/projects/openbravopos
+//
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program; if not, write to the Free Software
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+bean = new com.openbravo.pos.reports.PanelReportBean();
+
+bean.setTitleKey("Menu.SalesFormPayAcum");
+bean.setReport("/com/openbravo/reports/salesformpayacum");
+bean.setResourceBundle("com/openbravo/reports/salesformpayacum_messages");
+
+bean.setSentence("SELECT " + 
+"DATE_FORMAT(RECEIPTS.DATENEW,'%d-%m-%Y') AS FECHA,  " +
+"IFNULL(CONCAT(CENTROCOSTO.NAME, '-', SUBCENTROCOSTO.NAME),'') AS CCOSTO, " +
+"IFNULL(TIPOPAGOPAYMENTS.NAME,'') AS FPAGO, SUM(PAYMENTS.TOTAL) AS TOTAL FROM " +
+"PAYMENTS " +
+"LEFT JOIN RECEIPTS ON PAYMENTS.RECEIPT=RECEIPTS.ID  " +
+"LEFT JOIN TIPOPAGOPAYMENTS ON PAYMENTS.PAYMENT= TIPOPAGOPAYMENTS.ID " +
+"LEFT JOIN TICKETS ON PAYMENTS.RECEIPT = TICKETS.ID " +
+"LEFT JOIN CUSTOMERS ON TICKETS.CUSTOMER = CUSTOMERS.ID " +
+"LEFT JOIN CENTROCOSTO ON CUSTOMERS.CCOSTOID = CENTROCOSTO.ID  " +
+"LEFT JOIN SUBCENTROCOSTO ON CUSTOMERS.SUBCCOSTOID = SUBCENTROCOSTO.ID " +
+"WHERE 1=1 " +
+"AND  ?(QBF_FILTER) " +
+"GROUP BY FPAGO, CCOSTO, FECHA " +
+"ORDER BY RECEIPTS.DATENEW ASC"  );
+
+bean.addParameter("RECEIPTS.DATENEW");
+bean.addParameter("RECEIPTS.DATENEW");
+bean.addQBFFilter(new com.openbravo.pos.reports.JParamsDatesInterval());
+bean.addParameter("PAYMENTS.PAYMENT");
+bean.addQBFFilter(new com.openbravo.pos.reports.JParamsTipoPagoPayWithFirst());
+bean.addParameter("CUSTOMERS.CCOSTOID");
+bean.addParameter("CUSTOMERS.SUBCCOSTOID");
+bean.addQBFFilter(new com.openbravo.pos.reports.JParamsCentroCosto());
+
+
+bean.addField("FECHA", com.openbravo.data.loader.Datas.STRING);
+bean.addField("CCOSTO", com.openbravo.data.loader.Datas.STRING);
+bean.addField("FPAGO", com.openbravo.data.loader.Datas.STRING);
+bean.addField("TOTAL", com.openbravo.data.loader.Datas.DOUBLE);
+
+
+
+

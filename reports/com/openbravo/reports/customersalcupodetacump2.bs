@@ -1,0 +1,66 @@
+//    Openbravo POS is a point of sales application designed for touch screens.
+//    Copyright (C) 2007-2008 Openbravo, S.L.
+//    http://sourceforge.net/projects/openbravopos
+//
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program; if not, write to the Free Software
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+bean = new com.openbravo.pos.reports.PanelReportBean();
+
+bean.setTitleKey("Menu.CustomerSaldoCupoDetAcuP2");
+bean.setReport("/com/openbravo/reports/customersalcupodetacump2");
+bean.setResourceBundle("com/openbravo/reports/customersalcupodetacump2_messages");
+
+bean.setSentence("SELECT CUSTOMERS.ID AS EMPLEADO, CUSTOMERS.TAXID, CUSTOMERS.NAME, CUSTOMERS.CARD, CONCAT(CENTROCOSTO.NAME, '-', SUBCENTROCOSTO.NAME) AS CCOSTO, " +
+"TICKETLINES.NAME AS PRODUCTO, TICKETLINES.UNITS AS CANTIDAD, " +
+"(PRODUCTS.PRICESELL2) AS PRECIO, (TICKETLINES.UNITS * PRODUCTS.PRICESELL2) AS PRECIOTOTAL, " +
+"RECEIPTS.DATENEW AS FECHA FROM " +
+"CUSTOMERS,PAYMENTS,TICKETS, TICKETLINES, TAXES, RECEIPTS, CENTROCOSTO, SUBCENTROCOSTO, PRODUCTS  " + 
+"WHERE CUSTOMERS.ID = TICKETS.CUSTOMER AND " + 
+"CUSTOMERS.CCOSTOID = CENTROCOSTO.ID AND " +
+"CUSTOMERS.SUBCCOSTOID = SUBCENTROCOSTO.ID AND " +
+"TICKETLINES.TAXID = TAXES.ID AND " +
+"TICKETS.ID = TICKETLINES.TICKET AND " +
+"TICKETS.ID = PAYMENTS.RECEIPT AND " +
+"TICKETS.ID = RECEIPTS.ID AND " +
+"TICKETLINES.PRODUCT = PRODUCTS.ID " +
+"AND ?(QBF_FILTER) " +
+"GROUP BY CUSTOMERS.ID, TICKETLINES.PRODUCT, TICKETS.ID " + 
+"ORDER BY CUSTOMERS.NAME");
+
+
+bean.addParameter("RECEIPTS.DATENEW");
+bean.addParameter("RECEIPTS.DATENEW");
+bean.addQBFFilter(new com.openbravo.pos.reports.JParamsDatesInterval());
+bean.addParameter("CUSTOMERS.ID");
+bean.addParameter("CUSTOMERS.NAME");
+bean.addQBFFilter(new com.openbravo.pos.reports.JParamsCustomerPer());
+bean.addParameter("CUSTOMERS.CCOSTOID");
+bean.addParameter("CUSTOMERS.SUBCCOSTOID");
+bean.addQBFFilter(new com.openbravo.pos.reports.JParamsCentroCosto());
+
+bean.addField("EMPLEADO", com.openbravo.data.loader.Datas.STRING);
+bean.addField("TAXID", com.openbravo.data.loader.Datas.STRING);
+bean.addField("NAME", com.openbravo.data.loader.Datas.STRING);
+bean.addField("CARD", com.openbravo.data.loader.Datas.STRING);
+bean.addField("CCOSTO", com.openbravo.data.loader.Datas.STRING);
+bean.addField("PRODUCTO", com.openbravo.data.loader.Datas.STRING);
+bean.addField("CANTIDAD", com.openbravo.data.loader.Datas.DOUBLE);
+bean.addField("PRECIO", com.openbravo.data.loader.Datas.DOUBLE);
+bean.addField("PRECIOTOTAL", com.openbravo.data.loader.Datas.DOUBLE);
+bean.addField("FECHA", com.openbravo.data.loader.Datas.TIMESTAMP);
+
+
+
+

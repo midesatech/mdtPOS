@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD JasperReport//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="salesformpayacum" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="772" leftMargin="10" rightMargin="10" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="ARG" class="java.lang.Object" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[SELECT
+DATE_FORMAT(RECEIPTS.DATENEW,'%d-%m-%Y') AS FECHA, IFNULL(CONCAT(CENTROCOSTO.NAME, '-', SUBCENTROCOSTO.NAME),'') AS CCOSTO,
+IFNULL(TIPOPAGOPAYMENTS.NAME,'') AS FPAGO, SUM(PAYMENTS.TOTAL) AS TOTAL FROM
+PAYMENTS
+LEFT JOIN RECEIPTS ON PAYMENTS.RECEIPT=RECEIPTS.ID
+LEFT JOIN TIPOPAGOPAYMENTS ON PAYMENTS.PAYMENT= TIPOPAGOPAYMENTS.ID
+LEFT JOIN TICKETS ON PAYMENTS.RECEIPT = TICKETS.ID
+LEFT JOIN CUSTOMERS ON TICKETS.CUSTOMER = CUSTOMERS.ID
+LEFT JOIN CENTROCOSTO ON CUSTOMERS.CCOSTOID = CENTROCOSTO.ID
+LEFT JOIN SUBCENTROCOSTO ON CUSTOMERS.SUBCCOSTOID = SUBCENTROCOSTO.ID
+GROUP BY FPAGO, CCOSTO, FECHA
+ORDER BY RECEIPTS.DATENEW ASC]]>
+	</queryString>
+	<field name="FECHA" class="java.lang.String"/>
+	<field name="CCOSTO" class="java.lang.String"/>
+	<field name="FPAGO" class="java.lang.String"/>
+	<field name="TOTAL" class="java.lang.Double"/>
+	<variable name="GRANTOTAL" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<variable name="TOTALES" class="java.lang.Double" resetType="Group" resetGroup="FECHA" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<group name="FECHA">
+		<groupExpression><![CDATA[$F{FECHA}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="17">
+				<staticText>
+					<reportElement mode="Opaque" x="484" y="0" width="177" height="17" backcolor="#B8CCE4"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL X DIA   ]]></text>
+				</staticText>
+				<textField hyperlinkType="None">
+					<reportElement mode="Opaque" x="661" y="0" width="110" height="17" backcolor="#B8CCE4"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue($V{TOTALES})]]></textFieldExpression>
+				</textField>
+				<textField hyperlinkType="None">
+					<reportElement mode="Opaque" x="0" y="0" width="484" height="17" backcolor="#B8CCE4"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{FECHA}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="102">
+			<staticText>
+				<reportElement mode="Opaque" x="661" y="83" width="110" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="83" width="117" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="484" y="83" width="177" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FORMA PAGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="117" y="83" width="367" height="19" forecolor="#FFFFFF" backcolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CENTRO - SUB CENTRO COSTO]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="false" hyperlinkType="None">
+				<reportElement key="textField-15" mode="Transparent" x="0" y="25" width="772" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+					<font fontName="Dialog" size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{label.titleCompass1}]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement key="textField-15" mode="Transparent" x="0" y="50" width="772" height="25" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="Dialog" size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["RESUMEN DE VENTA POR FORMA DE PAGO DESDE  " +
+com.openbravo.format.Formats.TIMESTAMPPos.formatValue((java.util.Date)((Object[])((Object[])$P{ARG})[0])[1]) +
+"  HASTA  " + com.openbravo.format.Formats.TIMESTAMPPos.formatValue((java.util.Date)((Object[])((Object[])$P{ARG})[0])[3])]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="0" y="0" width="772" height="25" forecolor="#000000"/>
+				<textElement textAlignment="Center">
+					<font fontName="Dialog" size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{label.titleCompass}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band height="17">
+			<textField hyperlinkType="None">
+				<reportElement x="0" y="0" width="117" height="17"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FECHA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToTallestObject" x="117" y="0" width="367" height="17"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CCOSTO}]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="484" y="0" width="177" height="17"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FPAGO}]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="661" y="0" width="110" height="17"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue($F{TOTAL})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band/>
+	</pageFooter>
+	<summary>
+		<band height="38">
+			<textField hyperlinkType="None">
+				<reportElement x="661" y="19" width="110" height="19"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue($V{GRANTOTAL})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="484" y="19" width="177" height="19"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL ACUMULADO  ]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
